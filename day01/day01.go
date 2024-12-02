@@ -64,29 +64,29 @@ func part1(leftList, rightList []int) {
 
 func part2(leftList, rightList []int) {
 	var similarityScore int
-  counted := make(map[int]int)
+	counted := make(map[int]int)
 
-  for i := 0; i < len(leftList); i++ {
-    // Check for previously counted value
-    if i > 0 && leftList[i] == leftList[i-1] {
-      similarityScore += leftList[i] * counted[i]
-      continue
-    }
+	for i := 0; i < len(leftList); i++ {
+		// Check for previously counted value
+		if i > 0 && leftList[i] == leftList[i-1] {
+			similarityScore += leftList[i] * counted[i]
+			continue
+		}
 
-    var count int
-    for j := 0; j < len(rightList); j++ {
-      if leftList[i] == rightList[j] {
-        count++
-      }
-      //Since array is sorted, stop looping rest of array once greater than current value
-      if rightList[j] > leftList[i] {
-        continue
-      }
-    }
-    counted[leftList[i]] = count
-    similarityScore += leftList[i] * count
-  }
-  fmt.Println("Similarity Score:", similarityScore)
+		var count int
+		for j := 0; j < len(rightList); j++ {
+			if leftList[i] == rightList[j] {
+				count++
+			}
+			//Since array is sorted, stop looping rest of array once greater than current value
+			if rightList[j] > leftList[i] {
+				continue
+			}
+		}
+		counted[leftList[i]] = count
+		similarityScore += leftList[i] * count
+	}
+	fmt.Println("Similarity Score:", similarityScore)
 }
 
 func absoluteDiff(x, y int) int {
