@@ -4,4 +4,6 @@ Having looked at several different programming languages I was interested this y
 
 ## Days
 * [Day 1: Historian Hysteria](./day01/day01.go)
-* Day 2 (coming soon!)
+* [Day 2: Red-Nosed Reports](./day02/day02.go)
+* [Day 3: Mull It Over](./day03/day03.go)
+* Day 4 (coming soon!)
