@@ -26,3 +26,6 @@ go.work.sum
 
 # Plain text AoC input files
 *.txt
+
+# VS Code settings directory
+.vscode/
