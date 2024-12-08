@@ -7,4 +7,7 @@ Having looked at several different programming languages I was interested this y
 * [Day 2: Red-Nosed Reports](./day02/day02.go)
 * [Day 3: Mull It Over](./day03/day03.go)
 * [Day 4: Ceres Search](./day04/day04.go)
-* Day 5 (coming soon!)
+* [Day 5: Print Queue](./day05/day05.go)
+* [Day 6: Guard Gallivant](./day06/day06.go)
+* [Day 7: Bridge Repair](./day07/day07.go)
+* Day 8 (coming soon!)
