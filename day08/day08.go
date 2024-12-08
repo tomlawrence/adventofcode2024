@@ -43,39 +43,65 @@ func main() {
 	for antenna, coords := range antennas {
 		fmt.Println(string(antenna), coords)
 	}
-	part1Count := getAntinodeCount(mapGrid, antennas)
+	part1Count := getAntinodeCount(mapGrid, antennas, false)
+	part2Count := getAntinodeCount(mapGrid, antennas, true)
 	fmt.Println("Part 1 - Number of antinodes:", part1Count)
+	fmt.Println("Part 2 - Number of antinodes:", part2Count)
 }
 
-func getAntinodeCount(mapGrid [][]byte, antennas map[byte][]Position) int {
-	var antinodeCount int
+func getAntinodeCount(mapGrid [][]byte, antennas map[byte][]Position, part2 bool) int {
 	antinodes := make(map[Position]bool)
 
 	for antenna, coords := range antennas {
-		fmt.Println(string(antenna))
 		for i, pos1 := range coords[:len(coords)-1] {
 			for _, pos2 := range coords[i+1:] {
+				if part2 {
+					antinodes[pos2] = true
+					antinodes[pos1] = true
+				}
+
 				delta := Position{pos2.y - pos1.y, pos2.x - pos1.x}
 				dPos1 := Position{pos1.y - delta.y, pos1.x - delta.x}
 				dPos2 := Position{pos2.y + delta.y, pos2.x + delta.x}
-				if isInBoundaries(dPos1, mapGrid) {
-					if !antinodes[dPos1] {
-						fmt.Println("Antinode of", string(antenna), "at", dPos1, "with delta", delta)
-						antinodes[dPos1] = true
-						antinodeCount++
+
+				for {
+					if isInBoundaries(dPos1, mapGrid) {
+						if !antinodes[dPos1] {
+							fmt.Println("Antinode of", string(antenna), "at", dPos1, "with delta", delta)
+							antinodes[dPos1] = true
+						}
+						if part2 {
+							dPos1 = Position{dPos1.y - delta.y, dPos1.x - delta.x}
+						} else {
+							break
+						}
+					} else {
+						fmt.Println("Out of bounds: Antinode of", string(antenna), "at", dPos1, "with delta", delta)
+						break
 					}
 				}
-				if isInBoundaries(dPos2, mapGrid) {
-					if !antinodes[dPos2] {
-						fmt.Println("Antinode of", string(antenna), "at", dPos2, "with delta", delta)
-						antinodes[dPos2] = true
-						antinodeCount++
+
+				for {
+					if isInBoundaries(dPos2, mapGrid) {
+						if !antinodes[dPos2] {
+							fmt.Println("Antinode of", string(antenna), "at", dPos2, "with delta", delta)
+							antinodes[dPos2] = true
+						}
+						if part2 {
+							dPos2 = Position{dPos2.y + delta.y, dPos2.x + delta.x}
+						} else {
+							break
+						}
+					} else {
+						fmt.Println("Out of bounds: Antinode of", string(antenna), "at", dPos2, "with delta", delta)
+						break
 					}
 				}
+
 			}
 		}
 	}
-	return antinodeCount
+	return len(antinodes)
 }
 
 func isInBoundaries(pos Position, mapGrid [][]byte) bool {
