@@ -39,10 +39,10 @@ func main() {
 		fmt.Println("Error reading file:", err)
 		return
 	}
-	fmt.Println("Antenna count:", antennaCount)
-	for antenna, coords := range antennas {
-		fmt.Println(string(antenna), coords)
-	}
+	//fmt.Println("Antenna count:", antennaCount)
+	//for antenna, coords := range antennas {
+	//	fmt.Println(string(antenna), coords)
+	//}
 	part1Count := getAntinodeCount(mapGrid, antennas, false)
 	part2Count := getAntinodeCount(mapGrid, antennas, true)
 	fmt.Println("Part 1 - Number of antinodes:", part1Count)
@@ -51,7 +51,6 @@ func main() {
 
 func getAntinodeCount(mapGrid [][]byte, antennas map[byte][]Position, part2 bool) int {
 	antinodes := make(map[Position]bool)
-
 	for antenna, coords := range antennas {
 		for i, pos1 := range coords[:len(coords)-1] {
 			for _, pos2 := range coords[i+1:] {
@@ -59,45 +58,9 @@ func getAntinodeCount(mapGrid [][]byte, antennas map[byte][]Position, part2 bool
 					antinodes[pos2] = true
 					antinodes[pos1] = true
 				}
-
 				delta := Position{pos2.y - pos1.y, pos2.x - pos1.x}
-				dPos1 := Position{pos1.y - delta.y, pos1.x - delta.x}
-				dPos2 := Position{pos2.y + delta.y, pos2.x + delta.x}
-
-				for {
-					if isInBoundaries(dPos1, mapGrid) {
-						if !antinodes[dPos1] {
-							fmt.Println("Antinode of", string(antenna), "at", dPos1, "with delta", delta)
-							antinodes[dPos1] = true
-						}
-						if part2 {
-							dPos1 = Position{dPos1.y - delta.y, dPos1.x - delta.x}
-						} else {
-							break
-						}
-					} else {
-						fmt.Println("Out of bounds: Antinode of", string(antenna), "at", dPos1, "with delta", delta)
-						break
-					}
-				}
-
-				for {
-					if isInBoundaries(dPos2, mapGrid) {
-						if !antinodes[dPos2] {
-							fmt.Println("Antinode of", string(antenna), "at", dPos2, "with delta", delta)
-							antinodes[dPos2] = true
-						}
-						if part2 {
-							dPos2 = Position{dPos2.y + delta.y, dPos2.x + delta.x}
-						} else {
-							break
-						}
-					} else {
-						fmt.Println("Out of bounds: Antinode of", string(antenna), "at", dPos2, "with delta", delta)
-						break
-					}
-				}
-
+				checkAntinodes(pos1, delta, -1, mapGrid, antinodes, antenna, part2)
+				checkAntinodes(pos2, delta, 1, mapGrid, antinodes, antenna, part2)
 			}
 		}
 	}
@@ -106,4 +69,25 @@ func getAntinodeCount(mapGrid [][]byte, antennas map[byte][]Position, part2 bool
 
 func isInBoundaries(pos Position, mapGrid [][]byte) bool {
 	return pos.y >= 0 && pos.y < len(mapGrid) && pos.x >= 0 && pos.x < len(mapGrid[0])
+}
+
+func checkAntinodes(startPos Position, delta Position, direction int, mapGrid [][]byte, antinodes map[Position]bool, antenna byte, part2 bool) {
+	startPos = Position{startPos.y + delta.y*direction, startPos.x + delta.x*direction}
+	currentPos := startPos
+	for {
+		if isInBoundaries(currentPos, mapGrid) {
+			if !antinodes[currentPos] {
+				//fmt.Println("Antinode of", string(antenna), "at", currentPos, "with delta", delta)
+				antinodes[currentPos] = true
+			}
+			if part2 {
+				currentPos = Position{y: currentPos.y + delta.y*direction, x: currentPos.x + delta.x*direction}
+			} else {
+				break
+			}
+		} else {
+			//fmt.Println("Out of bounds: Antinode of", string(antenna), "at", currentPos, "with delta", delta)
+			break
+		}
+	}
 }
