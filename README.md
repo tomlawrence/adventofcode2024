@@ -10,4 +10,5 @@ Having looked at several different programming languages I was interested this y
 * [Day 5: Print Queue](./day05/day05.go)
 * [Day 6: Guard Gallivant](./day06/day06.go)
 * [Day 7: Bridge Repair](./day07/day07.go)
-* Day 8 (coming soon!)
+* [Day 8: Resonant Collinearity](./day08/day08.go)
+* Day 9 (coming soon!)
