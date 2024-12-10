@@ -29,12 +29,19 @@ func main() {
 		}
 		diskMap = append(diskMap, number)
 	}
-	expandedDisk := expandDisk(diskMap)
-	fmt.Println("Part 1 - Filesystem Checksum:", part1(expandedDisk))
+	fmt.Println("Part 1 - Filesystem Checksum:", part1(diskMap))
+	fmt.Println("Part 2 - Filesystem Checksum:", part2(diskMap))
 }
 
-func part1(expandedDisk []File) int {
-	defraggedDisk := defragDisk(expandedDisk)
+func part1(diskMap []int) int {
+	expandedDisk := expandDisk(diskMap)
+	defraggedDisk := defragDisk(expandedDisk, false)
+	return calculateChecksum(defraggedDisk)
+}
+
+func part2(diskMap []int) int {
+	expandedDisk := expandDisk(diskMap)
+	defraggedDisk := defragDisk(expandedDisk, true)
 	return calculateChecksum(defraggedDisk)
 }
 
@@ -52,17 +59,17 @@ func expandDisk(disk []int) []File {
 	return expandedDisk
 }
 
-func findLeftmostFreeSpace(disk []File) int {
+func findLeftmostFreeSpace(disk []File, requiredSize int) int {
 	for i := 0; i < len(disk); i++ {
-		if disk[i].Data == -1 {
+		if disk[i].Data == -1 && (requiredSize == 0 || disk[i].Size >= requiredSize) {
 			return i
 		}
 	}
 	return -1
 }
 
-func findLastFile(disk []File, leftmostFreeSpaceIndex int) int {
-	for i := len(disk) - 1; i > leftmostFreeSpaceIndex; i-- {
+func findLastFile(disk []File, lastFileIndex int) int {
+	for i := lastFileIndex; i >= 0; i-- {
 		if disk[i].Data != -1 {
 			return i
 		}
@@ -70,15 +77,22 @@ func findLastFile(disk []File, leftmostFreeSpaceIndex int) int {
 	return -1
 }
 
-func defragDisk(disk []File) []File {
-	for {
-		//printDisk(disk)
-		i := findLeftmostFreeSpace(disk)
-		j := findLastFile(disk, i)
-		if j == -1 {
-			break
+func defragDisk(disk []File, wholeFilesOnly bool) []File {
+	lastFileIndex := len(disk) - 1
+	for lastFileIndex >= 0 {
+		j := findLastFile(disk, lastFileIndex)
+		requiredSize := 0
+		if wholeFilesOnly {
+			requiredSize = disk[j].Size
+		}
+		i := findLeftmostFreeSpace(disk, requiredSize)
+		if i == -1 || i >= j {
+			lastFileIndex = j - 1
+			continue
 		}
 		disk = moveFile(disk, i, j)
+		//printDisk(disk)
+		lastFileIndex = len(disk) - 1
 	}
 	return disk
 }
