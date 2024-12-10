@@ -11,4 +11,5 @@ Having looked at several different programming languages I was interested this y
 * [Day 6: Guard Gallivant](./day06/day06.go)
 * [Day 7: Bridge Repair](./day07/day07.go)
 * [Day 8: Resonant Collinearity](./day08/day08.go)
-* Day 9 (coming soon!)
+* [Day 9: Disk Fragmenter](./day09/day09.go)
+* Day 10 (coming soon!)
