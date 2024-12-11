@@ -4,15 +4,9 @@ import (
 	"fmt"
 	"math"
 	"os"
-	"slices"
 	"strconv"
 	"strings"
 )
-
-type Stone struct {
-	Data int
-	Size int
-}
 
 func main() {
 	file, err := os.ReadFile("day11/day11.txt")
@@ -21,45 +15,58 @@ func main() {
 		return
 	}
 	stonesString := strings.Split(string(file), " ")
-	var stones []int
+	stones := make(map[int]int)
+
 	for _, char := range stonesString {
-		stone, err := strconv.Atoi(char)
+		number, err := strconv.Atoi(char)
 		if err != nil {
 			fmt.Printf("Error converting number: %v\n", err)
 			continue
 		}
-		stones = append(stones, stone)
+		stones[number]++
 	}
-	fmt.Println(stones)
-	fmt.Println("Part 1 - Number of stones:", part1(stones, 25))
+	fmt.Println("Part 1 - Number of stones:", blink(stones, 25))
+	fmt.Println("Part 2 - Number of stones:", blink(stones, 75))
 }
 
-func part1(stones []int, blinks int) int {
+func blink(stones map[int]int, blinks int) int {
 	for i := 0; i < blinks; i++ {
-		stones = blink(stones)
+		stones = arrange(stones)
+		//fmt.Printf("Loop %v: %v\n", i+1, countStones(stones))
 	}
-	return len(stones)
+	return countStones(stones)
 }
 
-func blink(stones []int) []int {
-	stonesNew := append([]int{}, stones...)
-	var j int
-	for _, stone := range stones {
-		switch {
-		case stone == 0:
-			stonesNew[j] = 1
-		case isEven(stone):
-			left, right := splitNumber(stone)
-			stonesNew[j] = right
-			stonesNew = slices.Insert(stonesNew, j, left)
-			j++
-		default:
-			stonesNew[j] *= 2024
-		}
-		j++
+func arrange(stones map[int]int) map[int]int {
+	stonesNew := make(map[int]int)
+	for num, qty := range stones {
+		stonesNew[num] = qty
 	}
-	//fmt.Println(stonesNew)
+	for num, qty := range stones {
+		switch {
+		case num == 0:
+			stonesNew[1] += qty
+			stonesNew[0] -= qty
+		case isEven(num):
+			left, right := splitNumber(num)
+			stonesNew[right] += qty
+			stonesNew[left] += qty
+			stonesNew[num] -= qty
+		default:
+			stonesNew[num] -= qty
+			num *= 2024
+			stonesNew[num] += qty
+		}
+	}
 	return stonesNew
+}
+
+func countStones(stones map[int]int) int {
+	var count int
+	for _, qty := range stones {
+		count += qty
+	}
+	return count
 }
 
 func isEven(n int) bool {
