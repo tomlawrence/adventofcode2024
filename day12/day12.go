@@ -14,7 +14,7 @@ type Region struct {
 	Type      byte
 	Plants    []Position
 	Perimeter int
-	Edges     int
+	Vertices  int
 }
 
 func main() {
@@ -63,6 +63,7 @@ func findRegion(start Position, garden [][]byte, visited map[Position]bool) Regi
 			}
 		}
 	}
+	region.Vertices = findCorners(region, garden)
 	return region
 }
 
@@ -88,5 +89,59 @@ func calculateTotalPrice(garden [][]byte) int {
 		//fmt.Println(string(region.Type), len(region.Plants), "*", region.Perimeter)
 	}
 	fmt.Println("Part 1 - Total Price:", totalPrice)
+	totalPrice = 0
+	for _, region := range findAllRegions(garden) {
+		totalPrice += len(region.Plants) * region.Vertices
+		//fmt.Println(string(region.Type), len(region.Plants), "*", region.Vertices)
+	}
+	fmt.Println("Part 2 - Total Price:", totalPrice)
 	return totalPrice
+}
+
+func findCorners(region Region, garden [][]byte) int {
+	corners := []Position{{-1, 1}, {1, 1}, {1, -1}, {-1, -1}} // NE, SE, SW, NW
+	count := 0
+	for _, plant := range region.Plants {
+		for _, corner := range corners {
+			y := plant.y + corner.y
+			x := plant.x + corner.x
+			if !inBounds(y, x, garden) || garden[y][x] != region.Type { // If corner doesn't match
+				if (!inBounds(y, x-corner.x, garden) || garden[y][x-corner.x] != region.Type) && // If plant left/right of corner doesn't match AND
+					(!inBounds(y-corner.y, x, garden) || garden[y-corner.y][x] != region.Type) || // If plant above/below corner doesn't match OR
+					(inBounds(y, x-corner.x, garden) && garden[y][x-corner.x] == region.Type) && // If plant left/right of corner matches AND
+						(inBounds(y-corner.y, x, garden) && garden[y-corner.y][x] == region.Type) { // If plant above/below corner matches
+					count++
+					//fmt.Println(getCornerName(corner), "corner at", string(region.Type), plant)
+				}
+				continue
+			}
+			if inBounds(y, x, garden) && garden[y][x] == region.Type { // If corner matches
+				if (garden[y][x-corner.x] != region.Type) && // If plant left/right of corner doesn't match AND
+					(garden[y-corner.y][x] != region.Type) { // If plant above/below corner doesn't match
+					count++
+					//fmt.Println(getCornerName(corner), "corner at", string(region.Type), plant)
+				}
+			}
+			continue
+		}
+	}
+	return count
+}
+
+func inBounds(y, x int, garden [][]byte) bool {
+	return y >= 0 && y < len(garden) && x >= 0 && x < len(garden[0])
+}
+
+// For debugging purposes
+func getCornerName(corner Position) string {
+	switch corner {
+	case Position{-1, 1}:
+		return "NE"
+	case Position{1, 1}:
+		return "SE"
+	case Position{1, -1}:
+		return "SW"
+	default: // {-1, -1}
+		return "NW"
+	}
 }
