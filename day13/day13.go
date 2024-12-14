@@ -42,8 +42,8 @@ func main() {
 	// for _, claw := range clawMachines {
 	// 	fmt.Printf("Button A: X+%d, Y+%d\nButton B: X+%d, Y+%d\nPrize: X=%d, Y=%d\n\n", claw.A.X, claw.A.Y, claw.B.X, claw.B.Y, claw.Prize.X, claw.Prize.Y)
 	// }
-	fmt.Println("Part 1 - Minimum tokens required: ", minimumTokensRequired(clawMachines, false))
-	fmt.Println("Part 2 - Minimum tokens required: ", minimumTokensRequired(clawMachines, true))
+	fmt.Println("Part 1 - Minimum tokens required:", minimumTokensRequired(clawMachines, false))
+	fmt.Println("Part 2 - Minimum tokens required:", minimumTokensRequired(clawMachines, true))
 }
 
 func minimumTokensRequired(clawMachines []Claw, part2 bool) int {
