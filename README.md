@@ -15,4 +15,6 @@ Having looked at several different programming languages I was interested this y
 * [Day 10: Hoof It](./day10/day10.go)
 * [Day 11: Plutonian Pebbles](./day11/day11.go)
 * [Day 12: Garden Groups](./day12/day12.go)
-* Day 13 (coming soon!)
+* [Day 13: Claw Contraption](./day13/day13.go)
+* [Day 14: Restroom Redoubt](./day14/day14.go)
+* Day 15 (coming soon!)
