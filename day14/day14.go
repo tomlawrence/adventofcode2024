@@ -9,8 +9,8 @@ import (
 )
 
 type Robot struct {
-	pX, pY int // position
-	vX, vY int // velocity
+	pX, pY int
+	vX, vY int
 }
 
 func main() {
